@@ -107,7 +107,7 @@ const CartCheckout: React.FC = () => {
               </div>
               <div className="mt-6">
                  <Link
-                 href={"/Shipment"}
+                 href={"/Payment"}
                  >
                   <Button className="w-full">Proceed to Payment</Button>
            </Link>
