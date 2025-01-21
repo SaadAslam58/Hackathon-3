@@ -1,15 +1,8 @@
-import { shipengine } from "@/lib/helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
-interface Params {
-  params: {
-    labelId: string;
-    labbled:string;
-  };
-}
-
-export async function GET(req: NextRequest, { params }: Params) {
-  const { labelId } = params;
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const labelId = searchParams.get("labelId");
 
   if (!labelId) {
     return NextResponse.json(
@@ -30,13 +23,20 @@ export async function GET(req: NextRequest, { params }: Params) {
     // Debugging log
     console.log(`Tracking request received for Label ID: ${labelId}`);
 
-    // ShipEngine API Call
-    const label = await shipengine.trackUsingLabelId(labelId);
+    // Dummy data for response
+    const dummyLabel = {
+      trackingNumber: "1Z9999999999999999",
+      statusDescription: "In Transit",
+      carrierStatusDescription: "Package is on its way to the destination.",
+      estimatedDeliveryDate: "2025-01-25",
+      actualDeliveryDate: "",
+      labelId: labelId
+    };
 
     // Debugging log for response
-    console.log("ShipEngine Response:", label);
+    console.log("Dummy Response:", dummyLabel);
 
-    return NextResponse.json(label, { status: 200 });
+    return NextResponse.json(dummyLabel, { status: 200 });
   } catch (err: unknown) {
     const error = err as Error;
     console.log("Error tracking shipment:", error.message);
