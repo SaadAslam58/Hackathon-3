@@ -3,6 +3,7 @@
 import { useCart } from "@/components/Cart/CartContext"; // Import the useCart hook
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 interface CartItem {
   id: number;
@@ -14,8 +15,18 @@ interface CartItem {
 
 const CartSidebar: React.FC = () => {
   const { cartItems, removeFromCart, isCartOpen, closeCart, updateQuantity } = useCart(); // Destructure closeCart, isCartOpen, and updateQuantity
+  const [open, setOpen] = useState(false);
 
-  if (!isCartOpen) return null; // Don't render the sidebar if it's not open
+  // Sync the local state with the context state
+  useEffect(() => {
+    if (isCartOpen) {
+      setOpen(true);
+    } else {
+      // Delay unmounting the component to allow the transition to finish
+      const timer = setTimeout(() => setOpen(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isCartOpen]);
 
   // Handle the increment and decrement of quantity
   const handleIncreaseQuantity = (id: number) => {
@@ -32,8 +43,14 @@ const CartSidebar: React.FC = () => {
     }
   };
 
+  if (!open) return null; // Don't render the sidebar if it's not open
+
   return (
-    <div className="fixed right-0 top-0 w-64 h-full bg-white p-4 shadow-lg">
+    <div
+      className={`fixed right-0 top-0 w-64 h-full bg-white p-4 shadow-lg transition-transform duration-300 ease-in-out ${
+        isCartOpen ? 'transform translate-x-0' : 'transform translate-x-full'
+      }`}
+    >
       <button onClick={closeCart} className="absolute top-4 right-4 text-lg font-bold">
         X {/* Close Button */}
       </button>
@@ -77,10 +94,7 @@ const CartSidebar: React.FC = () => {
                   </button>
                 </div>
                 <div>
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-600"
-                  >
+                  <button onClick={() => removeFromCart(item.id)} className="text-red-600">
                     Remove
                   </button>
                 </div>

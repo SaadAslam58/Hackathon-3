@@ -36,7 +36,7 @@ const Hero = () => {
       alt='Hero'
       height={"1344"}
       width={"700"}
-      className='md:w-[1174px] h-auto w-auto md:h-[604px]'
+      className='h-auto w-auto md:h-[604px]'
       />
       </div>
 

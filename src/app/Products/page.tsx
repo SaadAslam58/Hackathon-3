@@ -12,6 +12,7 @@ const page = () => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
     async function fetchData() {
+    try {
       const data = await client.fetch(`*[_type == "product"][]{
   _id,          
   productName,
@@ -26,7 +27,11 @@ const page = () => {
 `);
       console.log(data);
       setProducts(data);
+    } catch (err) {
+      console.log("Error Displaing Products", err);
     }
+  
+  }
     fetchData();
   }, []);
   return (
