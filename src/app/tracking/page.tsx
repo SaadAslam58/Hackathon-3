@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { TrackingData } from "../../../type";
 
-const TrackingPage = () => {
+// Loading component to show while fetching data
+const Loading = () => <div>Loading...</div>;
+
+// Main Tracking Page component
+const TrackingPageContent = () => {
   const [labelId, setLabelId] = useState<string>("");
   const [trackingInfo, setTrackingInfo] = useState<TrackingData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -121,5 +125,12 @@ const TrackingPage = () => {
     </main>
   );
 };
+
+// Main component wrapped with Suspense
+const TrackingPage = () => (
+  <Suspense fallback={<Loading />}>
+    <TrackingPageContent />
+  </Suspense>
+);
 
 export default TrackingPage;
