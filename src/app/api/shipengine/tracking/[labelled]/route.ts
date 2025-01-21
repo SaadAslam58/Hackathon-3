@@ -37,8 +37,9 @@ export async function GET(
     console.log("ShipEngine Response:", label);
 
     return NextResponse.json(label, { status: 200 });
-  } catch (err: any) {
-    console.log("Error tracking shipment:", err.message);
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.log("Error tracking shipment:", error.message);
 
     return NextResponse.json(
       { error: "An error occurred while tracking the shipment. Please try again later." },

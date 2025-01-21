@@ -17,7 +17,7 @@ const Review = {
       name: "rating",
       title: "Rating",
       type: "number",
-      validation: (Rule: { min: (arg0: number) => { max: (arg0: number) => any } }) => Rule.min(1).max(5),
+      validation: (Rule: { min: (arg0: number) => { max: (arg0: number) => number } }) => Rule.min(1).max(5),
     },
     {
       name: "comment",

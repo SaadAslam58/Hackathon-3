@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export interface Product {
-  _id: any;
+  _id: number;
   productName: string;
   category: string;
   price: number;
@@ -22,7 +22,7 @@ export interface Product {
 }
 
 interface Review {
-  _id: any;
+  _id: string;
   name: string;
   rating: number;
   comment: string;
@@ -37,140 +37,137 @@ const ProductPage: React.FC = () => {
   const router = useRouter();
   const [extra, setExtra] = useState<Product[]>([]);
 
-  // Pre-saved dummy reviews
-  const dummyReviews: Review[] = [
-    {
-      _id: "1",
-      name: "John Doe",
-      rating: 4,
-      comment: "Great product, really loved it!",
-    },
-    {
-      _id: "2",
-      name: "Jane Smith",
-      rating: 5,
-      comment: "Amazing quality and fast delivery!",
-    },
-    {
-      _id: "3",
-      name: "Michael Lee",
-      rating: 3,
-      comment: "Good, but I was expecting better durability.",
-    },
-  ];
+  // Fetch product and reviews
+  useEffect(() => {
+    async function fetchData() {
+      const dummyReviews: Review[] = [
+        {
+          _id: "1",
+          name: "John Doe",
+          rating: 4,
+          comment: "Great product, really loved it!",
+        },
+        {
+          _id: "2",
+          name: "Jane Smith",
+          rating: 5,
+          comment: "Amazing quality and fast delivery!",
+        },
+        {
+          _id: "3",
+          name: "Michael Lee",
+          rating: 3,
+          comment: "Good, but I was expecting better durability.",
+        },
+      ];
 
-    // Fetch product and reviews
-    useEffect(() => {
-      async function fetchData() {
-        try {
-          const productData = await client.fetch(
-            `*[_type == "product" && _id == $id]{
-              _id,          
-              productName,
-              category,
-              price,
-              inventory,
-              colors,
-              status,
-              description,
-              "imageUrl": image.asset->url
-            }`,
-            { id }
-          );
-          setProduct(productData[0]);
-  
-          const reviewData = await client.fetch(
-            `*[_type == "review" && productId == $id]{
-              _id,
-              name,
-              rating,
-              comment
-            }`,
-            { id }
-          );
-  
-          const productExtra = await client.fetch(
-            `*[_type == "product"][]{
-              _id,          
-              productName,
-              category,
-              price,
-              inventory,
-              colors,
-              status,
-              description,
-              "imageUrl": image.asset->url
-            }`
-          );
-          setExtra(productExtra);
-  
-          const allReviews = reviewData.length ? reviewData : dummyReviews;
-          setReviews(allReviews);
-        } catch (error: any) {
-          console.error("Error fetching data:", error);
-        }
+      try {
+        const productData = await client.fetch(
+          `*[_type == "product" && _id == $id]{
+            _id,          
+            productName,
+            category,
+            price,
+            inventory,
+            colors,
+            status,
+            description,
+            "imageUrl": image.asset->url
+          }`,
+          { id }
+        );
+        setProduct(productData[0]);
+
+        const reviewData = await client.fetch(
+          `*[_type == "review" && productId == $id]{
+            _id,
+            name,
+            rating,
+            comment
+          }`,
+          { id }
+        );
+
+        const productExtra = await client.fetch(
+          `*[_type == "product"][]{
+            _id,          
+            productName,
+            category,
+            price,
+            inventory,
+            colors,
+            status,
+            description,
+            "imageUrl": image.asset->url
+          }`
+        );
+        setExtra(productExtra);
+
+        const allReviews = reviewData.length ? reviewData : dummyReviews;
+        setReviews(allReviews);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      fetchData();
-    }, [id, dummyReviews]);  // Added 'dummyReviews' to dependency array
-  
-    // Add a dummy review (does not send data to Sanity)
-    const handleAddReview = async () => {
-      if (!newReview.name || !newReview.rating || !newReview.comment) {
-        alert("Please fill out all fields.");
-        return;
-      }
-  
-      // Dummy review (no request to Sanity)
-      const dummyReview: Review = {
-        _id: Math.random().toString(),
-        name: newReview.name,
-        rating: newReview.rating,
-        comment: newReview.comment,
-      };
-  
-      // Update the reviews state with the dummy review
-      setReviews((prevReviews) => [...prevReviews, dummyReview]);
-  
-      // Reset the new review form
-      setNewReview({ name: "", rating: 0, comment: "" });
+    }
+    fetchData();
+  }, [id]);  // Removed 'dummyReviews' from dependency array
+
+  // Add a dummy review (does not send data to Sanity)
+  const handleAddReview = async () => {
+    if (!newReview.name || !newReview.rating || !newReview.comment) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
+    // Dummy review (no request to Sanity)
+    const dummyReview: Review = {
+      _id: Math.random().toString(),
+      name: newReview.name,
+      rating: newReview.rating,
+      comment: newReview.comment,
     };
-  
-    // Add to cart
-    const handleAddToCart = useCallback(
-      (product: Product) => {
-        const cartItem = {
-          id: product._id,
-          productName: product.productName,
-          price: product.price,
-          quantity: 1,
-          imageUrl: product.imageUrl,
-          inventory: product.inventory,
-          description: product.description,
-        };
-        addToCart(cartItem);
-      },
-      [addToCart]
-    );
-  
-    // Buy now
-    const handleBuyNow = (product: Product) => {
+
+    // Update the reviews state with the dummy review
+    setReviews((prevReviews) => [...prevReviews, dummyReview]);
+
+    // Reset the new review form
+    setNewReview({ name: "", rating: 0, comment: "" });
+  };
+
+  // Add to cart
+  const handleAddToCart = useCallback(
+    (product: Product) => {
       const cartItem = {
         id: product._id,
         productName: product.productName,
         price: product.price,
         quantity: 1,
-        inventory: product.inventory,
         imageUrl: product.imageUrl,
+        inventory: product.inventory,
         description: product.description,
       };
-  
       addToCart(cartItem);
-      router.push("/Checkout");
+    },
+    [addToCart]
+  );
+
+  // Buy now
+  const handleBuyNow = (product: Product) => {
+    const cartItem = {
+      id: product._id,
+      productName: product.productName,
+      price: product.price,
+      quantity: 1,
+      inventory: product.inventory,
+      imageUrl: product.imageUrl,
+      description: product.description,
     };
-  
+
+    addToCart(cartItem);
+    router.push("/Checkout");
+  };
 
   if (!product) return <div>Loading...</div>;
-
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-gray-100">
       {/* Product Details */}
@@ -245,7 +242,7 @@ const ProductPage: React.FC = () => {
 
       {/* Extra Products Section */}
       <div className="h-full w-[90%] mb-5 grid grid-cols-2 md:grid-cols-4 gap-3 mx-auto">
-        {extra.map((item: any, index: number) => (
+        {extra.map((item: Product, index: number) => (
           <div
             key={item._id || `${index}`} // Use _id or fallback to index if _id is missing
             className="pb-4 m-1 bg-center items-center shadow-lg rounded-lg md:transition-all duration-300 md:hover:scale-105"
@@ -267,7 +264,7 @@ const ProductPage: React.FC = () => {
               <p className="text-[12px] text-[#757575] font-thing pt-1">
                 {item.description.slice(0, 50)}...
               </p>
-              <p className="text-[#757575]">{item.color}</p>
+              <p className="text-[#757575]">{item.colors}</p>
               <p>PKR {item.price}</p>
             </div>
           </div>

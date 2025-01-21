@@ -256,7 +256,7 @@ const Page = () => {
           </div>
 
           <div className="md:w-[75%] w-full justify-center items-center flex-col grid grid-cols-1 mt-5 md:grid-cols-3 gap-3 ">
-            {Products.slice(7, 16).map((item:any) => {
+            {Products.slice(7, 16).map((item:Product) => {
               return (
                 <div
                   key={item._id} // Ensure unique key prop
@@ -279,7 +279,7 @@ const Page = () => {
                     <p className="text-[12px] text-[#757575] font-thing pt-1">
                       {item.description.slice(0,50)}...
                     </p>
-                    <p className="text-[#757575]">{item.color}</p>
+                    <p className="text-[#757575]">{item.colors}</p>
                     <p>PKR {item.price}</p>
                   </div>
                 </div>
