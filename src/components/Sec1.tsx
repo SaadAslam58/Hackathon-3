@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { urlFor } from '@/sanity/lib/image';
 import { client } from '@/sanity/lib/client';
 import { useState,useEffect } from 'react';
+import { Product } from '@/app/posts/[id]/page';
 
 
 const Sec1 = () => {
-const [products, setProducts] = useState([]);
+const [products, setProducts] = useState<Product[]>([]);
  useEffect(()=>{
     async function fetchData(){
         const data = await client.fetch(`*[_type == "product"][]{
@@ -65,7 +66,7 @@ setProducts(data);
 
  </div>
   <div className="w-[90%]  items-center justify-center mx-auto grid grid-cols-1 mt-5 md:grid-cols-3 gap-3">
-  {products.slice(0,3).map((item:any) => {
+  {products.slice(0,3).map((item:Product) => {
     return (
       <div
         key={item._id}

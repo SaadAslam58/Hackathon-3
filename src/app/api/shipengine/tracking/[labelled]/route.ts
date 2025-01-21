@@ -1,9 +1,13 @@
 import { shipengine } from "@/lib/helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
+interface LabelParams {
+  labelId: string;
+}
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { labelId: string } }
+  { params }: { params: LabelParams }
 ) {
   const { labelId } = params;
 
@@ -33,8 +37,8 @@ export async function GET(
     console.log("ShipEngine Response:", label);
 
     return NextResponse.json(label, { status: 200 });
-  } catch (error: any) {
-    console.error("Error tracking shipment:", error.message);
+  } catch (err: any) {
+    console.log("Error tracking shipment:", err.message);
 
     return NextResponse.json(
       { error: "An error occurred while tracking the shipment. Please try again later." },

@@ -16,8 +16,7 @@ const Header: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Product[]>([]); // Store filtered results
   const [query, setQuery] = useState(""); // Store the query
 
-
-  const searchRef = useRef<any>(null); // Reference for the search bar
+  const searchRef = useRef<HTMLDivElement>(null); // Reference for the search bar
   const [isOpen, setIsOpen] = useState(false); // Sheet open state
   const { toggleCart } = useCart();
   const { totalItems } = useCart(); // Access the totalItems from context
@@ -75,6 +74,7 @@ const Header: React.FC = () => {
     setSearchResults([]); // Clear search results
     setQuery(""); // Clear query
   };
+
 
   return (
     <div>
@@ -231,7 +231,7 @@ const Header: React.FC = () => {
 
               {searchResults.length > 0 && (
                 <div className="absolute w-screen md:w-[30vw] top-12 justify-center items-center bg-[#efeeee] py-2 px-3 rounded-lg text-black shadow-xl z-10">
-                  {searchResults.map((item: Product) => (
+                  {searchResults.map((item:Product) => (
                     <Link 
                     href={`/posts/${item._id}`} 
                     key={item._id}

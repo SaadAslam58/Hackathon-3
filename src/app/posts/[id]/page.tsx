@@ -59,114 +59,115 @@ const ProductPage: React.FC = () => {
     },
   ];
 
-  // Fetch product and reviews
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const productData = await client.fetch(
-          `*[_type == "product" && _id == $id]{
-            _id,          
-            productName,
-            category,
-            price,
-            inventory,
-            colors,
-            status,
-            description,
-            "imageUrl": image.asset->url
-          }`,
-          { id }
-        );
-        setProduct(productData[0]);
-
-        const reviewData = await client.fetch(
-          `*[_type == "review" && productId == $id]{
-            _id,
-            name,
-            rating,
-            comment
-          }`,
-          { id }
-        );
-
-        const productExtra = await client.fetch(
-          `*[_type == "product"][]{
-            _id,          
-            productName,
-            category,
-            price,
-            inventory,
-            colors,
-            status,
-            description,
-            "imageUrl": image.asset->url
-          }`
-        );
-        setExtra(productExtra);
-
-        const allReviews = reviewData.length ? reviewData : dummyReviews;
-        setReviews(allReviews);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+    // Fetch product and reviews
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          const productData = await client.fetch(
+            `*[_type == "product" && _id == $id]{
+              _id,          
+              productName,
+              category,
+              price,
+              inventory,
+              colors,
+              status,
+              description,
+              "imageUrl": image.asset->url
+            }`,
+            { id }
+          );
+          setProduct(productData[0]);
+  
+          const reviewData = await client.fetch(
+            `*[_type == "review" && productId == $id]{
+              _id,
+              name,
+              rating,
+              comment
+            }`,
+            { id }
+          );
+  
+          const productExtra = await client.fetch(
+            `*[_type == "product"][]{
+              _id,          
+              productName,
+              category,
+              price,
+              inventory,
+              colors,
+              status,
+              description,
+              "imageUrl": image.asset->url
+            }`
+          );
+          setExtra(productExtra);
+  
+          const allReviews = reviewData.length ? reviewData : dummyReviews;
+          setReviews(allReviews);
+        } catch (error: any) {
+          console.error("Error fetching data:", error);
+        }
       }
-    }
-    fetchData();
-  }, [id]);
-
-  // Add a dummy review (does not send data to Sanity)
-  const handleAddReview = async () => {
-    if (!newReview.name || !newReview.rating || !newReview.comment) {
-      alert("Please fill out all fields.");
-      return;
-    }
-
-    // Dummy review (no request to Sanity)
-    const dummyReview: Review = {
-      _id: Math.random().toString(),
-      name: newReview.name,
-      rating: newReview.rating,
-      comment: newReview.comment,
+      fetchData();
+    }, [id, dummyReviews]);  // Added 'dummyReviews' to dependency array
+  
+    // Add a dummy review (does not send data to Sanity)
+    const handleAddReview = async () => {
+      if (!newReview.name || !newReview.rating || !newReview.comment) {
+        alert("Please fill out all fields.");
+        return;
+      }
+  
+      // Dummy review (no request to Sanity)
+      const dummyReview: Review = {
+        _id: Math.random().toString(),
+        name: newReview.name,
+        rating: newReview.rating,
+        comment: newReview.comment,
+      };
+  
+      // Update the reviews state with the dummy review
+      setReviews((prevReviews) => [...prevReviews, dummyReview]);
+  
+      // Reset the new review form
+      setNewReview({ name: "", rating: 0, comment: "" });
     };
-
-    // Update the reviews state with the dummy review
-    setReviews((prevReviews) => [...prevReviews, dummyReview]);
-
-    // Reset the new review form
-    setNewReview({ name: "", rating: 0, comment: "" });
-  };
-
-  // Add to cart
-  const handleAddToCart = useCallback(
-    (product: Product) => {
+  
+    // Add to cart
+    const handleAddToCart = useCallback(
+      (product: Product) => {
+        const cartItem = {
+          id: product._id,
+          productName: product.productName,
+          price: product.price,
+          quantity: 1,
+          imageUrl: product.imageUrl,
+          inventory: product.inventory,
+          description: product.description,
+        };
+        addToCart(cartItem);
+      },
+      [addToCart]
+    );
+  
+    // Buy now
+    const handleBuyNow = (product: Product) => {
       const cartItem = {
         id: product._id,
         productName: product.productName,
         price: product.price,
         quantity: 1,
-        imageUrl: product.imageUrl,
         inventory: product.inventory,
+        imageUrl: product.imageUrl,
         description: product.description,
       };
+  
       addToCart(cartItem);
-    },
-    [addToCart]
-  );
-
-  // Buy now
-  const handleBuyNow = (product: Product) => {
-    const cartItem = {
-      id: product._id,
-      productName: product.productName,
-      price: product.price,
-      quantity: 1,
-      inventory: product.inventory,
-      imageUrl: product.imageUrl,
-      description: product.description,
+      router.push("/Checkout");
     };
-
-    addToCart(cartItem);
-    router.push("/Checkout");
-  };
+  
 
   if (!product) return <div>Loading...</div>;
 

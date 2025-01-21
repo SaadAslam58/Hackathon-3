@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { TrackingData } from "../../../type";
 
@@ -14,14 +14,6 @@ const TrackingPage = () => {
   const router = useRouter();
   const queryLabelId = searchParams?.get("labelId") || "";
 
-  useEffect(() => {
-    if (queryLabelId) {
-      setLabelId(queryLabelId);
-      fetchTrackingData(queryLabelId);
-    }
-  }, [queryLabelId]);
-
-  // Dummy tracking data
   const dummyTrackingData = {
     trackingNumber: "1Z9999999999999999",
     statusDescription: "In Transit",
@@ -30,7 +22,7 @@ const TrackingPage = () => {
     actualDeliveryDate: "",
   };
 
-  const fetchTrackingData = async (id: string) => {
+  const fetchTrackingData = useCallback(async (id: string) => {
     if (!id) {
       setErrorMessage("Label ID is required.");
       return;
@@ -45,7 +37,14 @@ const TrackingPage = () => {
       setIsLoading(false);
       router.replace(`/tracking?labelId=${id}`);
     }, 1000); // Simulated delay of 1 second
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (queryLabelId) {
+      setLabelId(queryLabelId);
+      fetchTrackingData(queryLabelId);
+    }
+  }, [queryLabelId, fetchTrackingData]);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

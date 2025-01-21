@@ -7,13 +7,14 @@ import { SheetContent, SheetTrigger, Sheet } from "@/components/ui/sheet";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { client } from "@/sanity/lib/client";
+import { Product } from "../posts/[id]/page";
 
-const page = () => {
-  const [products, setProducts] = useState([]);
+const Page = () => {
+  const [Products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
     async function fetchData() {
     try {
-      const data = await client.fetch(`*[_type == "product"][]{
+      const Data = await client.fetch(`*[_type == "product"][]{
   _id,          
   productName,
   category,
@@ -25,8 +26,8 @@ const page = () => {
   "imageUrl": image.asset->url
 }
 `);
-      console.log(data);
-      setProducts(data);
+      console.log(Data);
+      setProducts(Data);
     } catch (err) {
       console.log("Error Displaing Products", err);
     }
@@ -255,7 +256,7 @@ const page = () => {
           </div>
 
           <div className="md:w-[75%] w-full justify-center items-center flex-col grid grid-cols-1 mt-5 md:grid-cols-3 gap-3 ">
-            {products.slice(7, 16).map((item: any, index) => {
+            {Products.slice(7, 16).map((item:any) => {
               return (
                 <div
                   key={item._id} // Ensure unique key prop
@@ -291,4 +292,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
