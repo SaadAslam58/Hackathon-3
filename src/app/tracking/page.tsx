@@ -14,15 +14,15 @@ const TrackingPage = () => {
   const router = useRouter();
   const queryLabelId = searchParams?.get("labelId") || "";
 
-  const dummyTrackingData = {
-    trackingNumber: "1Z9999999999999999",
-    statusDescription: "In Transit",
-    carrierStatusDescription: "Package is on its way to the destination.",
-    estimatedDeliveryDate: "2025-01-25",
-    actualDeliveryDate: "",
-  };
-
   const fetchTrackingData = useCallback(async (id: string) => {
+    const dummyTrackingData: TrackingData = {
+      trackingNumber: "1Z9999999999999999",
+      statusDescription: "In Transit",
+      carrierStatusDescription: "Package is on its way to the destination.",
+      estimatedDeliveryDate: "2025-01-25",
+      actualDeliveryDate: "",
+    };
+
     if (!id) {
       setErrorMessage("Label ID is required.");
       return;

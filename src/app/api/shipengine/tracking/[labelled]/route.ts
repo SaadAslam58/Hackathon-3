@@ -1,13 +1,9 @@
 import { shipengine } from "@/lib/helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
-interface LabelParams {
-  labelId: string;
-}
-
 export async function GET(
   req: NextRequest,
-  { params }: { params: LabelParams }
+  { params }: { params: { labelId: string } }
 ) {
   const { labelId } = params;
 
