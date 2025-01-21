@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 interface Params {
   params: {
     labelId: string;
+    labbled:string;
   };
 }
 
