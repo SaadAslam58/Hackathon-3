@@ -15,7 +15,8 @@ const TrackingPage = () => {
   const queryLabelId = searchParams?.get("labelId") || "";
 
   const fetchTrackingData = useCallback(async (id: string) => {
-    const dummyTrackingData: TrackingData = {
+    // Move dummyTrackingData inside useCallback
+    const dummyTrackingData = {
       trackingNumber: "1Z9999999999999999",
       statusDescription: "In Transit",
       carrierStatusDescription: "Package is on its way to the destination.",

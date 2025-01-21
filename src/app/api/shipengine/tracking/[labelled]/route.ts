@@ -1,10 +1,13 @@
 import { shipengine } from "@/lib/helper/shipEngine";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { labelId: string } }
-) {
+interface Params {
+  params: {
+    labelId: string;
+  };
+}
+
+export async function GET(req: NextRequest, { params }: Params) {
   const { labelId } = params;
 
   if (!labelId) {
