@@ -37,6 +37,13 @@ export async function POST(request: Request) {
       paymentMethod: body.paymentMethod,
       totalPrice: body.totalPrice,
       cartItems: body.cartItems,
+      address: body.address,
+      state: body.state,
+      country: body.country,
+      city: body.city,
+      cardNumber: body.cardNumber,
+      expiry: body.expiry,
+      cvv: body.cvv,
     });
 
     // Return a success response
@@ -44,10 +51,10 @@ export async function POST(request: Request) {
       { message: 'Data submitted successfully!', result },
       { status: 200 }
     );
-  } catch (error:any) {
+  } catch (error: unknown) {
     console.error('Error submitting data to Sanity:', error);
     return NextResponse.json(
-      { message: 'Failed to submit data', error: error.message },
+      { message: 'Failed to submit data', error: (error as Error).message },
       { status: 500 }
     );
   }

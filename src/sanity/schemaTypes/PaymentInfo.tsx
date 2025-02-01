@@ -1,3 +1,5 @@
+import { Rule } from '@sanity/types';
+
 const PaymentInfo = {
   name: 'person',
   type: 'document',
@@ -26,11 +28,13 @@ const PaymentInfo = {
       type: 'string',
       title: 'Email',
       description: 'The email address of the person.',
-      validation: (Rule:any) =>
-        Rule.regex(
-          /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
-          { name: 'email' }
-        ).error('Invalid email format'),
+      validation: (rule: Rule) =>
+        rule
+          .regex(
+            /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+            { name: 'email' }
+          )
+          .error('Invalid email format'),
     },
     {
       name: 'phone',

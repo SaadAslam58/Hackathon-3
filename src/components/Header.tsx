@@ -93,7 +93,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           <div className="md:relative md:left-[130px] hidden md:flex">
-            <Link href="/Products">
+            <Link href="/ProductsPage">
               <h1 className="text-[13px] font-medium p-1 md:p-2  bg-white rounded-sm">
                 Skip to the main content
               </h1>

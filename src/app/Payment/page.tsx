@@ -100,7 +100,8 @@ const PaymentPage = () => {
       setPaymentSuccess(true);
       setShowSuccessPopup(true);
     } catch (error) {
-      alert("Submission failed, try again.");
+      console.error("Submission failed:", error);
+      alert("Submission failed, please try again.");
     }
   };
 
