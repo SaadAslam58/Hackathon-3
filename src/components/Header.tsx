@@ -106,7 +106,7 @@ const Header: React.FC = () => {
                   <h1 className="border-r-black">Home</h1>
                 </div>
               </Link>
-              <Link href="/Products">
+              <Link href="/ProductsPage">
                 <div className="border-r-black border-r-2 pr-2">
                   <h1 className="border-r-black">Products</h1>
                 </div>
@@ -138,7 +138,7 @@ const Header: React.FC = () => {
                     </h1>
                   </div>
                 </Link>
-                <Link href="/Products" onClick={() => setIsOpen(false)}>
+                <Link href="/ProductsPage" onClick={() => setIsOpen(false)}>
                   <div className="flex justify-start items-center gap-1 border-b-black border-b">
                     <h1>Become A Nike</h1>
                     <div>

@@ -21,6 +21,7 @@ interface CartContextType {
   toggleCart: () => void;
   closeCart: () => void;
   totalItems: number; // Total number of items in the cart
+  resetCart: () => void; // New function to reset/clear the cart
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -73,6 +74,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   // Calculate total number of items in the cart
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  // Reset the cart by clearing all items
+  const resetCart = () => setCartItems([]);
+
   return (
     <CartContext.Provider
       value={{
@@ -84,6 +88,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         toggleCart,
         closeCart,
         totalItems,
+        resetCart,
       }}
     >
       {children}
