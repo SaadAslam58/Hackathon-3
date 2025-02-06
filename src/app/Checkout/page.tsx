@@ -43,7 +43,7 @@ const CartCheckout: React.FC = () => {
                       alt={item.productName}
                       width={100}
                       height={100}
-                      className="w-full rounded-md"
+                      className="w-full md:w-[20%] rounded-md"
                     />
                     <div className="ml-4">
                       <p className="text-lg font-semibold">{item.productName}</p>

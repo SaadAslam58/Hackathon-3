@@ -154,7 +154,7 @@ const PaymentPage = () => {
                     <p className="font-semibold">{item.productName}</p>
                     <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                     <p className="font-medium text-gray-800">
-                      ${item.price.toFixed(2)}
+                      PKR {item.price.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -276,15 +276,7 @@ const PaymentPage = () => {
                         required
                       />
                     </div>
-                    <input
-                      type="text"
-                      name="date"
-                      placeholder="Delivery Date (YYYY-MM-DD)"
-                      value={formData.date}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      required
-                    />
+                   
                   </div>
                 </div>
               </div>
