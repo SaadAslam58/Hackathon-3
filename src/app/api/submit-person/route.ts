@@ -1,6 +1,39 @@
 import { createClient } from '@sanity/client';
 import { NextResponse } from 'next/server';
 
+interface CartItem {
+  _key?: string;
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  productName: string;
+}
+
+interface PaymentDoc {
+  _type: 'person';
+  fullName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  city: string;
+  address: string;
+  state: string;
+  postalCode: string;
+  date: string; // or Date if you're sending a Date object
+  paymentMethod: string;
+  totalPrice: number;
+  cartItems: CartItem[];
+  cardNumber?: string;
+  expiry?: string;
+  cvv?: string;
+}
+
+// Helper to generate a unique key for each cart item
+const generateKey = () => Math.random().toString(36).substring(2, 15);
+
 // Initialize Sanity Client
 const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID, // Your Sanity project ID
@@ -17,34 +50,69 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Validate the required fields
-    if (!body.fullName || !body.email || !body.paymentMethod || !body.totalPrice || !body.cartItems) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 }
-      );
+    const requiredFields = [
+      'fullName',
+      'firstName',
+      'lastName',
+      'email',
+      'phone',
+      'country',
+      'city',
+      'address',
+      'state',
+      'postalCode',
+      'date',
+      'paymentMethod',
+      'totalPrice',
+      'cartItems',
+    ];
+
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { message: `Missing required field: ${field}` },
+          { status: 400 }
+        );
+      }
     }
 
-    // Create a new document in Sanity
-    const result = await sanityClient.create({
-      _type: 'person', // The document type (matches your schema name)
+    // Ensure each cart item has a unique _key and map productName to name
+    const cartItemsWithKeys: CartItem[] = body.cartItems.map((item:CartItem) => ({
+      _key: item._key || generateKey(),
+      id: item.id,
+      name: item.productName, // mapping productName to the "name" field
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    // Build the payload to match the schema
+    const payload: PaymentDoc = {
+      _type: 'person', // Must match your schema's document type
       fullName: body.fullName,
       firstName: body.firstName,
       lastName: body.lastName,
       email: body.email,
       phone: body.phone,
+      country: body.country,
+      city: body.city,
+      address: body.address,
+      state: body.state,
       postalCode: body.postalCode,
       date: body.date,
       paymentMethod: body.paymentMethod,
       totalPrice: body.totalPrice,
-      cartItems: body.cartItems,
-      address: body.address,
-      state: body.state,
-      country: body.country,
-      city: body.city,
-      cardNumber: body.cardNumber,
-      expiry: body.expiry,
-      cvv: body.cvv,
-    });
+      cartItems: cartItemsWithKeys, // Now includes _key and correct name mapping
+    };
+
+    // Only include card details if paymentMethod is "Card"
+    if (body.paymentMethod === 'Card') {
+      payload.cardNumber = body.cardNumber;
+      payload.expiry = body.expiry;
+      payload.cvv = body.cvv;
+    }
+
+    // Create a new document in Sanity
+    const result = await sanityClient.create(payload);
 
     // Return a success response
     return NextResponse.json(
