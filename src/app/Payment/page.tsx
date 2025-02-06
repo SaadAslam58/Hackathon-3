@@ -161,7 +161,9 @@ const PaymentPage = () => {
               ))}
             </div>
             <div className="mt-4 border-t pt-4">
-              <p className="text-lg font-semibold">Total: <span className="text-blue-600">PKR {totalPrice.toFixed(2)}</span></p>
+              <p className="text-lg font-semibold">
+                Total: <span className="text-blue-600">PKR {totalPrice.toFixed(2)}</span>
+              </p>
             </div>
           </div>
 
@@ -276,9 +278,21 @@ const PaymentPage = () => {
                         required
                       />
                     </div>
-                   
                   </div>
                 </div>
+              </div>
+
+              {/* New Order Date Field */}
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Order Date</h2>
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
               </div>
 
               {/* Payment Method */}
